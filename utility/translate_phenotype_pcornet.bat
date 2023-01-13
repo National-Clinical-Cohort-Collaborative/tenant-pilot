@@ -1,0 +1,2 @@
+java -jar SqlRender.jar ..\PhenotypeScripts\N3C_phenotype_pcornet_mssql.sql ..\PhenotypeScripts\N3C_phenotype_pcornet_oracle.sql -translate oracle
+java -jar SqlRender.jar ..\PhenotypeScripts\N3C_phenotype_pcornet_mssql.sql ..\PhenotypeScripts\N3C_phenotype_pcornet_postgres.sql -translate postgresql
