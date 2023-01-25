@@ -20,7 +20,7 @@ TRUNCATE TABLE @resultsDatabaseSchema.N3C_CLINICAL_COHORT;
 
 INSERT INTO @resultsDatabaseSchema.N3C_CLINICAL_COHORT
 SELECT person_id
-FROM measurement  
+FROM @cdmDatabaseSchema.measurement  
 WHERE measurement_concept_id IN (
 4154790, --DBP, SNOMED
 4236281, --DBP, lying down, SNOMED
