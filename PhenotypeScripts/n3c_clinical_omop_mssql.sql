@@ -32,6 +32,6 @@ WHERE measurement_concept_id IN (
 36304130, --DBP, lateral position, LOINC
 4099154, --body weight, SNOMED
 3025315 --body weight, LOINC
-) AND measurement_date >= '1/1/2018'
+) AND measurement_date >= CAST('2018-01-01' as datetime)
 GROUP BY person_id
 HAVING datediff(day, min(measurement_date), max(measurement_date)) >= 30;
