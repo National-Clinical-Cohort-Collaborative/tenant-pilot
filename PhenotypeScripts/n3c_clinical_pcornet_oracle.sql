@@ -6,7 +6,7 @@ HOW TO RUN:
 If you are not using the R or Python exporters, you will need to find and replace @cdmDatabaseSchema and @resultsDatabaseSchema, @cdmDatabaseSchema with your local CDM schema details. This is the only modification you should make to this script.
 **/
 BEGIN
-  EXECUTE IMMEDIATE 'CREATE TABLE @resultsDatabaseSchema.N3C_PRE_COHORT  (patid	VARCHAR2(50)  NOT NULL)';
+  EXECUTE IMMEDIATE 'CREATE TABLE @resultsDatabaseSchema.N3C_CLINICAL_COHORT  (patid	VARCHAR2(50)  NOT NULL)';
 EXCEPTION
   WHEN OTHERS THEN
     IF SQLCODE != -955 THEN
