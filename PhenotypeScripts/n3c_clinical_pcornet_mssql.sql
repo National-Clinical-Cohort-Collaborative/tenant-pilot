@@ -1,5 +1,5 @@
 /**
-N3C Clinical Phenotype 1.0 - OMOP MSSQL
+N3C Clinical Phenotype 1.0 - PCORnet MSSQL
 Authors: Marshall Clark, Sofia Dard, Emily Pfaff
 
 HOW TO RUN:
