@@ -8,7 +8,7 @@ If you are not using the R or Python exporters, you will need to find and replac
 USER NOTES:
 In OHDSI conventions, we do not usually write tables to the main database schema.
 OHDSI uses @resultsDatabaseSchema as a results schema build cohort tables for specific analysis.
-We will build one tables in this script (n3c_clinical_cohort).
+We will build one tables in this script (N3C_CLINICAL_COHORT).
 Each table is assembled in the results schema as we know some OMOP analysts do not have write access to their @cdmDatabaseSchema.
 If you have read/write to your cdmDatabaseSchema, you would use the same schema name for both.
 **/

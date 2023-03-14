@@ -54,7 +54,8 @@ def bigquery_connect(config):
     driver = config.get('bigquery','driver')
 
     pyodbc.autocommit = True
-    conn = pyodbc.connect('DSN=Google BigQuery', autocommit=True)
+    constr = 'DRIVER='+driver+';OAuthMechanism=0;Email='+oauthserviceacctemail+';KeyFilePath='+oauthpvtkeypath+';Catalog='+projectid+';'
+    conn = pyodbc.connect(constr, autocommit=True)
     return(conn)
 
 def parse_sql(sql_fname,sql_params):

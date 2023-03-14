@@ -13,14 +13,14 @@ Each table is assembled in the results schema as we know some OMOP analysts do n
 If you have read/write to your cdmDatabaseSchema, you would use the same schema name for both.
 **/
 
---IF OBJECT_ID('@resultsDatabaseSchema.N3C_CLINICAL_COHORT', 'U') IS NULL
+--IF OBJECT_ID('@resultsDatabaseSchema.n3c_clinical_cohort', 'U') IS NULL
 --	CREATE TABLE @resultsDatabaseSchema.n3c_clinical_cohort (person_id INT NOT NULL);
 --
---TRUNCATE TABLE @resultsDatabaseSchema.N3C_CLINICAL_COHORT;
+--TRUNCATE TABLE @resultsDatabaseSchema.n3c_clinical_cohort;
 
-CREATE or REPLACE TABLE @resultsDatabaseSchema.N3C_CLINICAL_COHORT (person_id INT NOT NULL);
+CREATE or REPLACE TABLE @resultsDatabaseSchema.n3c_clinical_cohort(person_id INT NOT NULL);
 
-INSERT INTO @resultsDatabaseSchema.N3C_CLINICAL_COHORT
+INSERT INTO @resultsDatabaseSchema.n3c_clinical_cohort
 SELECT person_id
 FROM @cdmDatabaseSchema.measurement  
 WHERE measurement_concept_id IN (
