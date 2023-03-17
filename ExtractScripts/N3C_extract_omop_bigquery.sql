@@ -26,14 +26,16 @@ select
    '@contactEmail' as CONTACT_EMAIL,
    '@cdmName' as CDM_NAME,
    '@cdmVersion' as CDM_VERSION,
-   (SELECT TOP 1 vocabulary_version FROM @resultsDatabaseSchema.n3c_pre_cohort) AS VOCABULARY_VERSION,
+   (SELECT vocabulary_version FROM @resultsDatabaseSchema.N3C_PRE_COHORT LIMIT 1) AS VOCABULARY_VERSION,
    null as N3C_PHENOTYPE_YN,
    null as N3C_PHENOTYPE_VERSION,
    '@shiftDateYN' as SHIFT_DATE_YN,
    '@maxNumShiftDays' as MAX_NUM_SHIFT_DAYS,
    CAST(GETDATE() as datetime) as RUN_DATE,
-   CAST( DATEADD(day, -@dataLatencyNumDays, GETDATE()) as datetime) as UPDATE_DATE,	--change integer based on your site's data latency
-   CAST( DATEADD(day, @daysBetweenSubmissions, GETDATE()) as datetime) as NEXT_SUBMISSION_DATE;
+--   CAST( DATEADD(day, -@dataLatencyNumDays, GETDATE()) as datetime) as UPDATE_DATE,	--change integer based on your site's data latency
+   CAST(DATE_ADD(GETDATE(), INTERVAL -@dataLatencyNumDays DAY) as datetime) as UPDATE_DATE,
+--   CAST( DATEADD(day, @daysBetweenSubmissions, GETDATE()) as datetime) as NEXT_SUBMISSION_DATE
+   CAST(DATE_ADD(GETDATE(), INTERVAL @daysBetweenSubmissions DAY) as datetime) as NEXT_SUBMISSION_DATE;
 
 --PERSON
 --OUTPUT_FILE: PERSON.csv
@@ -53,8 +55,8 @@ SELECT
    RACE_SOURCE_CONCEPT_ID,
    ETHNICITY_SOURCE_VALUE,
    ETHNICITY_SOURCE_CONCEPT_ID
-  FROM @cdmDatabaseSchema.person p
-  JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+  FROM @cdmDatabaseSchema.PERSON p
+  JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
     ON p.PERSON_ID = n.PERSON_ID;
 
 --OBSERVATION_PERIOD
@@ -65,13 +67,13 @@ SELECT
    CAST(OBSERVATION_PERIOD_START_DATE as datetime) as OBSERVATION_PERIOD_START_DATE,
    CAST(OBSERVATION_PERIOD_END_DATE as datetime) as OBSERVATION_PERIOD_END_DATE,
    PERIOD_TYPE_CONCEPT_ID
- FROM @cdmDatabaseSchema.observation_period p
- JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+ FROM @cdmDatabaseSchema.OBSERVATION_PERIOD p
+ JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
    ON p.PERSON_ID = n.PERSON_ID
    AND (
-   OBSERVATION_PERIOD_START_DATE >= DATEFROMPARTS(2018,01,01)
+   OBSERVATION_PERIOD_START_DATE >= DATE(2018,01,01)
       OR
-   OBSERVATION_PERIOD_END_DATE >= DATEFROMPARTS(2018,01,01)
+   OBSERVATION_PERIOD_END_DATE >= DATE(2018,01,01)
    );
 
 --VISIT_OCCURRENCE
@@ -94,10 +96,10 @@ SELECT
    DISCHARGE_TO_CONCEPT_ID,
    DISCHARGE_TO_SOURCE_VALUE,
    PRECEDING_VISIT_OCCURRENCE_ID
-FROM @cdmDatabaseSchema.visit_occurrence v
-JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+FROM @cdmDatabaseSchema.VISIT_OCCURRENCE v
+JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
   ON v.PERSON_ID = n.PERSON_ID
-WHERE v.VISIT_START_DATE >= DATEFROMPARTS(2018,01,01);
+WHERE v.VISIT_START_DATE >= DATE(2018,01,01);
 
 --CONDITION_OCCURRENCE
 --OUTPUT_FILE: CONDITION_OCCURRENCE.csv
@@ -117,10 +119,10 @@ SELECT
    CONDITION_SOURCE_VALUE,
    CONDITION_SOURCE_CONCEPT_ID,
    NULL as CONDITION_STATUS_SOURCE_VALUE
-FROM @cdmDatabaseSchema.condition_occurrence co
-JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+FROM @cdmDatabaseSchema.CONDITION_OCCURRENCE co
+JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
   ON CO.person_id = n.person_id
-WHERE co.CONDITION_START_DATE >= DATEFROMPARTS(2018,01,01);
+WHERE co.CONDITION_START_DATE >= DATE(2018,01,01);
 
 --DRUG_EXPOSURE
 --OUTPUT_FILE: DRUG_EXPOSURE.csv
@@ -147,10 +149,10 @@ SELECT
    DRUG_SOURCE_CONCEPT_ID,
    ROUTE_SOURCE_VALUE,
    DOSE_UNIT_SOURCE_VALUE
-FROM @cdmDatabaseSchema.drug_exposure de
-JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+FROM @cdmDatabaseSchema.DRUG_EXPOSURE de
+JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
   ON de.PERSON_ID = n.PERSON_ID
-WHERE de.DRUG_EXPOSURE_START_DATE >= DATEFROMPARTS(2018,01,01);
+WHERE de.DRUG_EXPOSURE_START_DATE >= DATE(2018,01,01);
 
 --DEVICE_EXPOSURE
 --OUTPUT_FILE: DEVICE_EXPOSURE.csv
@@ -170,10 +172,10 @@ SELECT
    NULL as VISIT_DETAIL_ID,
    DEVICE_SOURCE_VALUE,
    DEVICE_SOURCE_CONCEPT_ID
-FROM @cdmDatabaseSchema.device_exposure de
-JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+FROM @cdmDatabaseSchema.DEVICE_EXPOSURE de
+JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
   ON de.PERSON_ID = n.PERSON_ID
-WHERE de.DEVICE_EXPOSURE_START_DATE >= DATEFROMPARTS(2018,01,01);
+WHERE de.DEVICE_EXPOSURE_START_DATE >= DATE(2018,01,01);
 
 --PROCEDURE_OCCURRENCE
 --OUTPUT_FILE: PROCEDURE_OCCURRENCE.csv
@@ -192,10 +194,10 @@ SELECT
    PROCEDURE_SOURCE_VALUE,
    PROCEDURE_SOURCE_CONCEPT_ID,
    NULL as MODIFIER_SOURCE_VALUE
-FROM @cdmDatabaseSchema.procedure_occurrence po
-JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+FROM @cdmDatabaseSchema.PROCEDURE_OCCURRENCE po
+JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
   ON PO.PERSON_ID = N.PERSON_ID
-WHERE po.PROCEDURE_DATE >= DATEFROMPARTS(2018,01,01);
+WHERE po.PROCEDURE_DATE >= DATE(2018,01,01);
 
 --MEASUREMENT
 --OUTPUT_FILE: MEASUREMENT.csv
@@ -220,10 +222,10 @@ SELECT
    MEASUREMENT_SOURCE_CONCEPT_ID,
    NULL as UNIT_SOURCE_VALUE,
    NULL as VALUE_SOURCE_VALUE
-FROM @cdmDatabaseSchema.measurement m
-JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+FROM @cdmDatabaseSchema.MEASUREMENT m
+JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
   ON M.PERSON_ID = N.PERSON_ID
-WHERE m.MEASUREMENT_DATE >= DATEFROMPARTS(2018,01,01);
+WHERE m.MEASUREMENT_DATE >= DATE(2018,01,01);
 
 --OBSERVATION
 --OUTPUT_FILE: OBSERVATION.csv
@@ -246,10 +248,10 @@ SELECT
    OBSERVATION_SOURCE_CONCEPT_ID,
    NULL as UNIT_SOURCE_VALUE,
    NULL as QUALIFIER_SOURCE_VALUE
-FROM @cdmDatabaseSchema.observation o
-JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+FROM @cdmDatabaseSchema.OBSERVATION o
+JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
   ON O.PERSON_ID = N.PERSON_ID
-WHERE o.OBSERVATION_DATE >= DATEFROMPARTS(2018,01,01);
+WHERE o.OBSERVATION_DATE >= DATE(2018,01,01);
 
 --DEATH
 --OUTPUT_FILE: DEATH.csv
@@ -261,10 +263,10 @@ SELECT
 	CAUSE_CONCEPT_ID,
 	NULL as CAUSE_SOURCE_VALUE,
 	CAUSE_SOURCE_CONCEPT_ID
-FROM @cdmDatabaseSchema.death d
-JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+FROM @cdmDatabaseSchema.DEATH d
+JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
 ON D.PERSON_ID = N.PERSON_ID
-WHERE d.DEATH_DATE >= DATEFROMPARTS(2018,01,01);
+WHERE d.DEATH_DATE >= DATE(2018,01,01);
 
 --LOCATION
 --OUTPUT_FILE: LOCATION.csv
@@ -277,11 +279,11 @@ SELECT
    ZIP,
    COUNTY,
    NULL as LOCATION_SOURCE_VALUE
-FROM @cdmDatabaseSchema.location l
+FROM @cdmDatabaseSchema.LOCATION l
 JOIN (
         SELECT DISTINCT p.LOCATION_ID
-        FROM @cdmDatabaseSchema.person p
-        JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+        FROM @cdmDatabaseSchema.PERSON p
+        JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
           ON p.person_id = n.person_id
       ) a
   ON l.location_id = a.location_id
@@ -296,11 +298,11 @@ SELECT
    NULL as LOCATION_ID,
    NULL as CARE_SITE_SOURCE_VALUE,
    NULL as PLACE_OF_SERVICE_SOURCE_VALUE
-FROM @cdmDatabaseSchema.care_site cs
+FROM @cdmDatabaseSchema.CARE_SITE cs
 JOIN (
         SELECT DISTINCT CARE_SITE_ID
-        FROM @cdmDatabaseSchema.visit_occurrence vo
-        JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+        FROM @cdmDatabaseSchema.VISIT_OCCURRENCE vo
+        JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
           ON vo.person_id = n.person_id
       ) a
   ON cs.CARE_SITE_ID = a.CARE_SITE_ID
@@ -322,31 +324,31 @@ SELECT
    SPECIALTY_SOURCE_CONCEPT_ID,
    GENDER_SOURCE_VALUE,
    GENDER_SOURCE_CONCEPT_ID
-FROM @cdmDatabaseSchema.provider pr
+FROM @cdmDatabaseSchema.PROVIDER pr
 JOIN (
        SELECT DISTINCT PROVIDER_ID
-       FROM @cdmDatabaseSchema.visit_occurrence vo
-       JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+       FROM @cdmDatabaseSchema.VISIT_OCCURRENCE vo
+       JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
           ON vo.PERSON_ID = n.PERSON_ID
        UNION
        SELECT DISTINCT PROVIDER_ID
-       FROM @cdmDatabaseSchema.drug_exposure de
-       JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+       FROM @cdmDatabaseSchema.DRUG_EXPOSURE de
+       JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
           ON de.PERSON_ID = n.PERSON_ID
        UNION
        SELECT DISTINCT PROVIDER_ID
-       FROM @cdmDatabaseSchema.measurement m
-       JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+       FROM @cdmDatabaseSchema.MEASUREMENT m
+       JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
           ON m.PERSON_ID = n.PERSON_ID
        UNION
        SELECT DISTINCT PROVIDER_ID
-       FROM @cdmDatabaseSchema.procedure_occurrence po
-       JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+       FROM @cdmDatabaseSchema.PROCEDURE_OCCURRENCE po
+       JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
           ON po.PERSON_ID = n.PERSON_ID
        UNION
        SELECT DISTINCT PROVIDER_ID
-       FROM @cdmDatabaseSchema.observation o
-       JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+       FROM @cdmDatabaseSchema.OBSERVATION o
+       JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
           ON o.PERSON_ID = n.PERSON_ID
      ) a
  ON pr.PROVIDER_ID = a.PROVIDER_ID
@@ -362,10 +364,10 @@ SELECT
    CAST(DRUG_ERA_END_DATE as datetime) as DRUG_ERA_END_DATE,
    DRUG_EXPOSURE_COUNT,
    GAP_DAYS
-FROM @cdmDatabaseSchema.drug_era dre
-JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+FROM @cdmDatabaseSchema.DRUG_ERA dre
+JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
   ON DRE.PERSON_ID = N.PERSON_ID
-WHERE DRUG_ERA_START_DATE >= DATEFROMPARTS(2018,01,01);
+WHERE DRUG_ERA_START_DATE >= DATE(2018,01,01);
 
 --CONDITION_ERA
 --OUTPUT_FILE: CONDITION_ERA.csv
@@ -376,79 +378,79 @@ SELECT
    CAST(CONDITION_ERA_START_DATE as datetime) as CONDITION_ERA_START_DATE,
    CAST(CONDITION_ERA_END_DATE as datetime) as CONDITION_ERA_END_DATE,
    CONDITION_OCCURRENCE_COUNT
-FROM @cdmDatabaseSchema.condition_era ce JOIN @resultsDatabaseSchema.n3c_clinical_cohort n ON CE.PERSON_ID = N.PERSON_ID
-WHERE CONDITION_ERA_START_DATE >= DATEFROMPARTS(2018,01,01);
+FROM @cdmDatabaseSchema.CONDITION_ERA ce JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n ON CE.PERSON_ID = N.PERSON_ID
+WHERE CONDITION_ERA_START_DATE >= DATE(2018,01,01);
 
 --DATA_COUNTS TABLE
 --OUTPUT_FILE: DATA_COUNTS.csv
 SELECT * from
 (select
    'PERSON' as TABLE_NAME,
-   (select count(*) from @cdmDatabaseSchema.person p JOIN @resultsDatabaseSchema.n3c_clinical_cohort n ON p.PERSON_ID = n.PERSON_ID) as ROW_COUNT
+   (select count(*) from @cdmDatabaseSchema.PERSON p JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n ON p.PERSON_ID = n.PERSON_ID) as ROW_COUNT
 
 UNION
 
 select
    'OBSERVATION_PERIOD' as TABLE_NAME,
-   (select count(*) from @cdmDatabaseSchema.observation_period op JOIN @resultsDatabaseSchema.n3c_clinical_cohort n ON op.PERSON_ID = n.PERSON_ID AND (OBSERVATION_PERIOD_START_DATE >= DATEFROMPARTS(2018,01,01) OR OBSERVATION_PERIOD_END_DATE >= DATEFROMPARTS(2018,01,01)) ) as ROW_COUNT
+   (select count(*) from @cdmDatabaseSchema.OBSERVATION_PERIOD op JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n ON op.PERSON_ID = n.PERSON_ID AND (OBSERVATION_PERIOD_START_DATE >= DATE(2018,01,01) OR OBSERVATION_PERIOD_END_DATE >= DATE(2018,01,01)) ) as ROW_COUNT
 
 UNION
 
 select
    'VISIT_OCCURRENCE' as TABLE_NAME,
-   (select count(*) from @cdmDatabaseSchema.visit_occurrence vo JOIN @resultsDatabaseSchema.n3c_clinical_cohort n ON vo.PERSON_ID = n.PERSON_ID AND VISIT_START_DATE >= DATEFROMPARTS(2018,01,01)) as ROW_COUNT
+   (select count(*) from @cdmDatabaseSchema.VISIT_OCCURRENCE vo JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n ON vo.PERSON_ID = n.PERSON_ID AND VISIT_START_DATE >= DATE(2018,01,01)) as ROW_COUNT
 
 UNION
 
 select
    'CONDITION_OCCURRENCE' as TABLE_NAME,
-   (select count(*) from @cdmDatabaseSchema.condition_occurrence co JOIN @resultsDatabaseSchema.n3c_clinical_cohort n ON co.PERSON_ID = n.PERSON_ID AND CONDITION_START_DATE >= DATEFROMPARTS(2018,01,01)) as ROW_COUNT
+   (select count(*) from @cdmDatabaseSchema.CONDITION_OCCURRENCE co JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n ON co.PERSON_ID = n.PERSON_ID AND CONDITION_START_DATE >= DATE(2018,01,01)) as ROW_COUNT
 
 UNION
 
 select
    'DRUG_EXPOSURE' as TABLE_NAME,
-   (select count(*) from @cdmDatabaseSchema.drug_exposure de JOIN @resultsDatabaseSchema.n3c_clinical_cohort n ON de.PERSON_ID = n.PERSON_ID AND DRUG_EXPOSURE_START_DATE >= DATEFROMPARTS(2018,01,01)) as ROW_COUNT
+   (select count(*) from @cdmDatabaseSchema.DRUG_EXPOSURE de JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n ON de.PERSON_ID = n.PERSON_ID AND DRUG_EXPOSURE_START_DATE >= DATE(2018,01,01)) as ROW_COUNT
 
 UNION
 
 select
    'DEVICE_EXPOSURE' as TABLE_NAME,
-   (select count(*) from @cdmDatabaseSchema.device_exposure de JOIN @resultsDatabaseSchema.n3c_clinical_cohort n ON de.PERSON_ID = n.PERSON_ID AND DEVICE_EXPOSURE_START_DATE >= DATEFROMPARTS(2018,01,01)) as ROW_COUNT
+   (select count(*) from @cdmDatabaseSchema.DEVICE_EXPOSURE de JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n ON de.PERSON_ID = n.PERSON_ID AND DEVICE_EXPOSURE_START_DATE >= DATE(2018,01,01)) as ROW_COUNT
 
 UNION
 
 select
    'PROCEDURE_OCCURRENCE' as TABLE_NAME,
-   (select count(*) from @cdmDatabaseSchema.procedure_occurrence po JOIN @resultsDatabaseSchema.n3c_clinical_cohort n ON po.PERSON_ID = n.PERSON_ID AND PROCEDURE_DATE >= DATEFROMPARTS(2018,01,01)) as ROW_COUNT
+   (select count(*) from @cdmDatabaseSchema.PROCEDURE_OCCURRENCE po JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n ON po.PERSON_ID = n.PERSON_ID AND PROCEDURE_DATE >= DATE(2018,01,01)) as ROW_COUNT
 
 UNION
 
 select
    'MEASUREMENT' as TABLE_NAME,
-   (select count(*) from @cdmDatabaseSchema.measurement m JOIN @resultsDatabaseSchema.n3c_clinical_cohort n ON m.PERSON_ID = n.PERSON_ID AND MEASUREMENT_DATE >= DATEFROMPARTS(2018,01,01)) as ROW_COUNT
+   (select count(*) from @cdmDatabaseSchema.MEASUREMENT m JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n ON m.PERSON_ID = n.PERSON_ID AND MEASUREMENT_DATE >= DATE(2018,01,01)) as ROW_COUNT
 
 UNION
 
 select
    'OBSERVATION' as TABLE_NAME,
-   (select count(*) from @cdmDatabaseSchema.observation o JOIN @resultsDatabaseSchema.n3c_clinical_cohort n ON o.PERSON_ID = n.PERSON_ID AND OBSERVATION_DATE >= DATEFROMPARTS(2018,01,01)) as ROW_COUNT
+   (select count(*) from @cdmDatabaseSchema.OBSERVATION o JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n ON o.PERSON_ID = n.PERSON_ID AND OBSERVATION_DATE >= DATE(2018,01,01)) as ROW_COUNT
 
 UNION
 
 SELECT
    'DEATH' as TABLE_NAME,
-  (select count(*) from @cdmDatabaseSchema.death d JOIN @resultsDatabaseSchema.n3c_clinical_cohort n ON d.PERSON_ID = n.PERSON_ID AND DEATH_DATE >= DATEFROMPARTS(2018,01,01)) as ROW_COUNT
+  (select count(*) from @cdmDatabaseSchema.DEATH d JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n ON d.PERSON_ID = n.PERSON_ID AND DEATH_DATE >= DATE(2018,01,01)) as ROW_COUNT
 
 UNION
 
 select
    'LOCATION' as TABLE_NAME,
-   (select count(*) from @cdmDatabaseSchema.location l
+   (select count(*) from @cdmDatabaseSchema.LOCATION l
    JOIN (
         SELECT DISTINCT p.LOCATION_ID
-        FROM @cdmDatabaseSchema.person p
-        JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+        FROM @cdmDatabaseSchema.PERSON p
+        JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
           ON p.person_id = n.person_id
       ) a
   ON l.location_id = a.location_id) as ROW_COUNT
@@ -457,11 +459,11 @@ UNION
 
 select
    'CARE_SITE' as TABLE_NAME,
-   (select count(*) from @cdmDatabaseSchema.care_site cs
+   (select count(*) from @cdmDatabaseSchema.CARE_SITE cs
 	JOIN (
         SELECT DISTINCT CARE_SITE_ID
-        FROM @cdmDatabaseSchema.visit_occurrence vo
-        JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+        FROM @cdmDatabaseSchema.VISIT_OCCURRENCE vo
+        JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
           ON vo.person_id = n.person_id
       ) a
   ON cs.CARE_SITE_ID = a.CARE_SITE_ID) as ROW_COUNT
@@ -470,31 +472,31 @@ UNION
 
  select
    'PROVIDER' as TABLE_NAME,
-   (select count(*) from @cdmDatabaseSchema.provider pr
+   (select count(*) from @cdmDatabaseSchema.PROVIDER pr
 	JOIN (
        SELECT DISTINCT PROVIDER_ID
-       FROM @cdmDatabaseSchema.visit_occurrence vo
-       JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+       FROM @cdmDatabaseSchema.VISIT_OCCURRENCE vo
+       JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
           ON vo.PERSON_ID = n.PERSON_ID
        UNION
        SELECT DISTINCT PROVIDER_ID
-       FROM @cdmDatabaseSchema.drug_exposure de
-       JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+       FROM @cdmDatabaseSchema.DRUG_EXPOSURE de
+       JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
           ON de.PERSON_ID = n.PERSON_ID
        UNION
        SELECT DISTINCT PROVIDER_ID
-       FROM @cdmDatabaseSchema.measurement m
-       JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+       FROM @cdmDatabaseSchema.MEASUREMENT m
+       JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
           ON m.PERSON_ID = n.PERSON_ID
        UNION
        SELECT DISTINCT PROVIDER_ID
-       FROM @cdmDatabaseSchema.procedure_occurrence po
-       JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+       FROM @cdmDatabaseSchema.PROCEDURE_OCCURRENCE po
+       JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
           ON po.PERSON_ID = n.PERSON_ID
        UNION
        SELECT DISTINCT PROVIDER_ID
-       FROM @cdmDatabaseSchema.observation o
-       JOIN @resultsDatabaseSchema.n3c_clinical_cohort n
+       FROM @cdmDatabaseSchema.OBSERVATION o
+       JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n
           ON o.PERSON_ID = n.PERSON_ID
      ) a
  ON pr.PROVIDER_ID = a.PROVIDER_ID) as ROW_COUNT
@@ -503,12 +505,12 @@ UNION
 
 select
    'DRUG_ERA' as TABLE_NAME,
-   (select count(*) from @cdmDatabaseSchema.drug_era de JOIN @resultsDatabaseSchema.n3c_clinical_cohort n ON de.PERSON_ID = n.PERSON_ID AND DRUG_ERA_START_DATE >= DATEFROMPARTS(2018,01,01)) as ROW_COUNT
+   (select count(*) from @cdmDatabaseSchema.DRUG_ERA de JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT n ON de.PERSON_ID = n.PERSON_ID AND DRUG_ERA_START_DATE >= DATE(2018,01,01)) as ROW_COUNT
 
 UNION
 
 select
    'CONDITION_ERA' as TABLE_NAME,
-   (select count(*) from @cdmDatabaseSchema.condition_era JOIN @resultsDatabaseSchema.n3c_clinical_cohort ON CONDITION_ERA.PERSON_ID = N3C_CLINICAL_COHORT.PERSON_ID AND CONDITION_ERA_START_DATE >= DATEFROMPARTS(2018,01,01)) as ROW_COUNT
+   (select count(*) from @cdmDatabaseSchema.CONDITION_ERA JOIN @resultsDatabaseSchema.N3C_CLINICAL_COHORT ON CONDITION_ERA.PERSON_ID = N3C_CLINICAL_COHORT.PERSON_ID AND CONDITION_ERA_START_DATE >= DATE(2018,01,01)) as ROW_COUNT
 ) s;
 
