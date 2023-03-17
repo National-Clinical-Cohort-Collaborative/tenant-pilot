@@ -30,7 +30,9 @@ WHERE measurement_concept_id IN (
 3019962, --DBP, standing up, LOINC
 3012888, --DBP, LOINC
 36304130, --DBP, lateral position, LOINC
+3013940, --DBP, supine
 4099154, --body weight, SNOMED
+3013762, --body weight, added by PEDSnet team
 3025315 --body weight, LOINC
 ) AND measurement_date >= CAST('2018-01-01' as datetime)
 GROUP BY person_id
