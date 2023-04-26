@@ -52,4 +52,4 @@ port = 22
 user = xxxxx
 keyfile = xxxxx
 ; directory on sftp server
-remote_dir = incoming
+remote_dir = incoming/clinical
