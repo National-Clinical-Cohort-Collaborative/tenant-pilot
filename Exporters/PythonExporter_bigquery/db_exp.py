@@ -375,7 +375,7 @@ if store_vocab == True:
 		
 		
 # ZIP #
-zip_prefix = config['site']['site_abbrev'] + '_' + config['site']['cdm_name'].lower() + '_' + datetime.date.today().strftime("%Y%m%d")
+zip_prefix = config['site']['site_abbrev'] + '_clinical_' + config['site']['cdm_name'].lower() + '_' + datetime.date.today().strftime("%Y%m%d")
 zip_fname = zip_prefix + ".zip"
 
 if create_zip == True:
