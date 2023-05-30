@@ -117,5 +117,5 @@ N3cOhdsi::runExtraction(connectionDetails = connectionDetails,
 #------------------------
 
 # Compress output
-zip::zipr(zipfile = paste0(siteAbbrev, "_", cdmName, "_", format(Sys.Date(),"%Y%m%d"),".zip"),
+zip::zipr(zipfile = paste0(siteAbbrev, "_clinical_", cdmName, "_", format(Sys.Date(),"%Y%m%d"),".zip"),
           files = list.files(outputFolder, full.names = TRUE))

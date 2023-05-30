@@ -13,10 +13,12 @@ Each table is assembled in the results schema as we know some OMOP analysts do n
 If you have read/write to your cdmDatabaseSchema, you would use the same schema name for both.
 **/
 
-IF OBJECT_ID('@resultsDatabaseSchema.N3C_CLINICAL_COHORT', 'U') IS NULL
-	CREATE TABLE @resultsDatabaseSchema.n3c_clinical_cohort (person_id INT NOT NULL);
+--IF OBJECT_ID('@resultsDatabaseSchema.N3C_CLINICAL_COHORT', 'U') IS NULL
+--	CREATE TABLE @resultsDatabaseSchema.n3c_clinical_cohort (person_id INT NOT NULL);
+--
+--TRUNCATE TABLE @resultsDatabaseSchema.N3C_CLINICAL_COHORT;
 
-TRUNCATE TABLE @resultsDatabaseSchema.N3C_CLINICAL_COHORT;
+CREATE or REPLACE TABLE @resultsDatabaseSchema.N3C_CLINICAL_COHORT (person_id INT NOT NULL);
 
 INSERT INTO @resultsDatabaseSchema.N3C_CLINICAL_COHORT
 SELECT person_id
@@ -36,4 +38,4 @@ WHERE measurement_concept_id IN (
 3025315 --body weight, LOINC
 ) AND measurement_date >= CAST('2018-01-01' as datetime)
 GROUP BY person_id
-HAVING datediff(day, min(measurement_date), max(measurement_date)) >= 730;
+HAVING date_diff(max(measurement_date),min(measurement_date),day) >= 730;

@@ -54,7 +54,8 @@ def bigquery_connect(config):
     driver = config.get('bigquery','driver')
 
     pyodbc.autocommit = True
-    conn = pyodbc.connect('DSN=Google BigQuery', autocommit=True)
+    constr = 'DRIVER='+driver+';OAuthMechanism=0;Email='+oauthserviceacctemail+';KeyFilePath='+oauthpvtkeypath+';Catalog='+projectid+';'
+    conn = pyodbc.connect(constr, autocommit=True)
     return(conn)
 
 def parse_sql(sql_fname,sql_params):
@@ -374,7 +375,7 @@ if store_vocab == True:
 		
 		
 # ZIP #
-zip_prefix = config['site']['site_abbrev'] + '_' + config['site']['cdm_name'].lower() + '_' + datetime.date.today().strftime("%Y%m%d")
+zip_prefix = config['site']['site_abbrev'] + '_clinical_' + config['site']['cdm_name'].lower() + '_' + datetime.date.today().strftime("%Y%m%d")
 zip_fname = zip_prefix + ".zip"
 
 if create_zip == True:
