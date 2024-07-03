@@ -26,4 +26,4 @@ where
 group by
 	patid
 having
-	datediff(day, min(measure_date), max(measure_date)) >= 730;
+	datediff(day, min(measure_date), max(measure_date)) >= 90;
