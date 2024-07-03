@@ -38,4 +38,4 @@ WHERE measurement_concept_id IN (
 3025315 --body weight, LOINC
 ) AND measurement_date >= CAST('2018-01-01' as datetime)
 GROUP BY person_id
-HAVING date_diff(max(measurement_date),min(measurement_date),day) >= 730;
+HAVING date_diff(max(measurement_date),min(measurement_date),day) >= 90;
