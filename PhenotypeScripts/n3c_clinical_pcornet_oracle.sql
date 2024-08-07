@@ -31,4 +31,4 @@ where
 group by
 	patid
 having
-	max(measure_date) - min(measure_date) >= 90;
+	max(measure_date) - min(measure_date) >= 30;
