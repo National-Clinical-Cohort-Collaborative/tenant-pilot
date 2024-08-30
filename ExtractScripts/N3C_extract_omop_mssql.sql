@@ -26,7 +26,7 @@ select
    '@contactEmail' as CONTACT_EMAIL,
    '@cdmName' as CDM_NAME,
    '@cdmVersion' as CDM_VERSION,
-   (SELECT TOP 1 vocabulary_version FROM @resultsDatabaseSchema.N3C_PRE_COHORT) AS VOCABULARY_VERSION,
+   null AS VOCABULARY_VERSION,
    null as N3C_PHENOTYPE_YN,
    null as N3C_PHENOTYPE_VERSION,
    '@shiftDateYN' as SHIFT_DATE_YN,
