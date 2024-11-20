@@ -35,11 +35,11 @@ select
 from
 	@cdmDatabaseSchema.diagnosis
 where
-	dx_date >= CAST('2018-01-01' as datetime)
+	COALESCE(dx_date, admit_date) >= CAST('2018-01-01' as datetime)
 group by
 	patid
 having
-	datediff(day, min(dx_date), max(dx_date)) >= 30
+	datediff(day, min(COALESCE(dx_date, admit_date)), max(COALESCE(dx_date, admit_date))) >= 30
 	
 UNION
 
