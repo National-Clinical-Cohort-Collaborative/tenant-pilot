@@ -1,5 +1,5 @@
 /**
-N3C Clinical Phenotype 1.0 - PCORnet MSSQL
+N3C Clinical Phenotype 2.0 - PCORnet MSSQL
 Authors: Marshall Clark, Sofia Dard, Emily Pfaff
 
 HOW TO RUN:
@@ -26,4 +26,30 @@ where
 group by
 	patid
 having
-	datediff(day, min(measure_date), max(measure_date)) >= 30;
+	datediff(day, min(measure_date), max(measure_date)) >= 30
+	
+UNION
+
+select
+	patid
+from
+	@cdmDatabaseSchema.diagnosis
+where
+	COALESCE(dx_date, admit_date) >= CAST('2018-01-01' as datetime)
+group by
+	patid
+having
+	datediff(day, min(COALESCE(dx_date, admit_date)), max(COALESCE(dx_date, admit_date))) >= 30
+	
+UNION
+
+select
+	patid
+from
+	@cdmDatabaseSchema.lab_result_cm
+where
+	result_date >= CAST('2018-01-01' as datetime)
+group by
+	patid
+having
+	datediff(day, min(result_date), max(result_date)) >= 30;

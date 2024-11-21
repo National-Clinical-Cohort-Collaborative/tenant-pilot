@@ -1,5 +1,5 @@
 /**
-N3C Clinical Phenotype 1.0 - OMOP MSSQL
+N3C Clinical Phenotype 2.0 - OMOP MSSQL
 Authors: Marshall Clark, Sofia Dard, Emily Pfaff
 
 HOW TO RUN:
@@ -21,19 +21,14 @@ TRUNCATE TABLE @resultsDatabaseSchema.N3C_CLINICAL_COHORT;
 INSERT INTO @resultsDatabaseSchema.N3C_CLINICAL_COHORT
 SELECT person_id
 FROM @cdmDatabaseSchema.measurement  
-WHERE measurement_concept_id IN (
-4154790, --DBP, SNOMED
-4236281, --DBP, lying down, SNOMED
-4248524, --DBP, sitting down, SNOMED
-3034703, --DBP, sitting down, LOINC
-4268883, --DBP, standing up, SNOMED
-3019962, --DBP, standing up, LOINC
-3012888, --DBP, LOINC
-36304130, --DBP, lateral position, LOINC
-3013940, --DBP, supine
-4099154, --body weight, SNOMED
-3013762, --body weight, added by PEDSnet team
-3025315 --body weight, LOINC
-) AND measurement_date >= CAST('2018-01-01' as datetime)
+WHERE measurement_date >= CAST('2018-01-01' as datetime)
 GROUP BY person_id
-HAVING datediff(day, min(measurement_date), max(measurement_date)) >= 30;
+HAVING datediff(day, min(measurement_date), max(measurement_date)) >= 30
+
+UNION
+
+SELECT person_id
+FROM @cdmDatabaseSchema.condition_occurrence 
+WHERE condition_start_date >= CAST('2018-01-01' as datetime)
+GROUP BY person_id
+HAVING datediff(day, min(condition_start_date), max(condition_start_date)) >= 30;

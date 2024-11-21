@@ -1,5 +1,5 @@
 /**
-N3C Clinical Phenotype 1.0 - OMOP MSSQL
+N3C Clinical Phenotype 2.0 - OMOP MSSQL
 Authors: Marshall Clark, Sofia Dard, Emily Pfaff
 
 HOW TO RUN:
@@ -13,29 +13,34 @@ Each table is assembled in the results schema as we know some OMOP analysts do n
 If you have read/write to your cdmDatabaseSchema, you would use the same schema name for both.
 **/
 
---IF OBJECT_ID('@resultsDatabaseSchema.N3C_CLINICAL_COHORT', 'U') IS NULL
---	CREATE TABLE @resultsDatabaseSchema.n3c_clinical_cohort (person_id INT NOT NULL);
---
---TRUNCATE TABLE @resultsDatabaseSchema.N3C_CLINICAL_COHORT;
+BEGIN
+    -- Check if the table exists and create it if not
+    BEGIN
+        EXECUTE IMMEDIATE 'CREATE TABLE @resultsDatabaseSchema.N3C_CLINICAL_COHORT (PERSON_ID NUMBER NOT NULL)';
+    EXCEPTION
+        WHEN OTHERS THEN
+            IF SQLCODE != -955 THEN -- -955 = ORA-00955: name is already used by an existing object
+                RAISE;
+            END IF;
+    END;
 
-CREATE or REPLACE TABLE @resultsDatabaseSchema.N3C_CLINICAL_COHORT (person_id INT NOT NULL);
+    -- Truncate the table
+    EXECUTE IMMEDIATE 'TRUNCATE TABLE @resultsDatabaseSchema.N3C_CLINICAL_COHORT';
+END;
+/
 
+-- Insert data into the table
 INSERT INTO @resultsDatabaseSchema.N3C_CLINICAL_COHORT
 SELECT person_id
 FROM @cdmDatabaseSchema.measurement  
-WHERE measurement_concept_id IN (
-4154790, --DBP, SNOMED
-4236281, --DBP, lying down, SNOMED
-4248524, --DBP, sitting down, SNOMED
-3034703, --DBP, sitting down, LOINC
-4268883, --DBP, standing up, SNOMED
-3019962, --DBP, standing up, LOINC
-3012888, --DBP, LOINC
-36304130, --DBP, lateral position, LOINC
-3013940, --DBP, supine
-4099154, --body weight, SNOMED
-3013762, --body weight, added by PEDSnet team
-3025315 --body weight, LOINC
-) AND measurement_date >= CAST('2018-01-01' as datetime)
+WHERE measurement_date >= TO_DATE('2018-01-01', 'YYYY-MM-DD')
 GROUP BY person_id
-HAVING date_diff(max(measurement_date),min(measurement_date),day) >= 30;
+HAVING (MAX(measurement_date) - MIN(measurement_date)) >= 30
+
+UNION
+
+SELECT person_id
+FROM @cdmDatabaseSchema.condition_occurrence 
+WHERE condition_start_date >= TO_DATE('2018-01-01', 'YYYY-MM-DD')
+GROUP BY person_id
+HAVING (MAX(condition_start_date) - MIN(condition_start_date)) >= 30;
