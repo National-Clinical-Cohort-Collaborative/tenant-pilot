@@ -1,0 +1,135 @@
+Data Item Number,Data Item Name,Length
+20,Patient ID Number (#20),
+21,Patient System ID-Hosp (#21),
+40,Registry ID,
+45,NPI--Registry ID (#45),
+70,Addr at DX--City,50
+86,Geocoding Quality Code,
+87,Geocoding Quality Code Detail,
+89,County at DX Analysis (#89),
+90,County at DX Reported (#90),
+94,County at DX Geocode 1970/80/90 (#94),
+95,County at DX Geocode2000 (#95),
+96,County at DX Geocode2010 (#96),
+97,County at DX Geocode2020 (#97),
+100,Addr at DX--Postal Code (#100),
+110,Census Tract 1970/80/90 (#110),
+120,Census Cod Sys 1970/80/90,
+125,Census Tract 2020 (#125),
+130,Census Tract 2000 (#130),
+135,Census Tract 2010 (#135),
+284,Urban Indian Organization (UIO),
+285,Urban Indian Organization (UIO) Service Area,
+310,Text--Usual Occupation,100
+320,Text--Usual Industry,100
+330,Census Occ/Ind Sys 70-00,
+361,Census Block Group 2020 (#361),
+362,Census Block Group 2000 (#362),
+363,Census Block Group 2010 (#363),
+364,Census Tr Cert 1970/80/90,
+365,Census Tr Certainty 2000,
+366,GIS Coordinate Quality,
+367,Census Tr Certainty 2010,
+368,Census Block Grp 1970/80/90 (#368),
+369,Census Tract Certainty 2020 (#369),
+540,Reporting Facility (#540),
+545,NPI--Reporting Facility (#545),
+550,Accession Number--Hosp (#550),
+570,Abstracted By,
+1810,Addr Current--City (#1810),
+1830,Addr Current--Postal Code (#1830),
+1840,County--Current (#1840),
+1842,Follow-Up Contact--City (#1842),
+1846,Follow-Up Contact--Postal (#1846),
+1944,Place of Death--Country,
+2230,Name--Last,40
+2232,Name--Birth Surname,40
+2240,Name--First,40
+2250,Name--Middle,40
+2260,Name--Prefix,3
+2270,Name--Suffix,3
+2280,Name--Alias,40
+2290,Name--Spouse/Parent,60
+2300,Medical Record Number,15
+2310,Military Record No Suffix,2
+2315,Medicare Beneficiary Identifier,11
+2320,Social Security Number,9
+2330,Addr at DX--No & Street,60
+2335,Addr at DX--Supplementl,60
+2350,Addr Current--No & Street,60
+2352,Latitude,10
+2354,Longitude,11
+2355,Addr Current--Supplementl,60
+2360,Telephone,10
+2380,DC State File Number,12
+2390,Name--Maiden,40
+2392,Follow-Up Contact--No&St,60
+2393,Follow-Up Contact--Suppl,60
+2394,Follow-Up Contact--Name,60
+2410,Institution Referred From,10
+2415,NPI--Inst Referred From,10
+2420,Institution Referred To,10
+2425,NPI--Inst Referred To,10
+2440,Following Registry,10
+2445,NPI--Following Registry,10
+2460,Physician--Managing,8
+2465,NPI--Physician--Managing,10
+2470,Physician--Follow-Up,8
+2475,NPI--Physician--Follow-Up,10
+2480,Physician--Primary Surg,8
+2485,NPI--Physician--Primary Surg,10
+2490,Physician 3,8
+2495,NPI--Physician 3,10
+2500,Physician 4,8
+2505,NPI--Physician 4,10
+2508,EHR Reporting,4000
+2520,Text--DX Proc--PE,4000
+2530,Text--DX Proc--X-ray/Scan,4000
+2540,Text--DX Proc--Scopes,4000
+2550,Text--DX Proc--Lab Tests,4000
+2560,Text--DX Proc--Op,4000
+2570,Text--DX Proc--Path,4000
+2580,Text--Primary Site Title,100
+2590,Text--Histology Title,100
+2600,Text--Staging,4000
+2610,RX Text--Surgery,4000
+2620,RX Text--Radiation (Beam),4000
+2630,RX Text--Radiation Other,4000
+2640,RX Text--Chemo,4000
+2650,RX Text--Hormone,4000
+2660,RX Text--BRM,4000
+2670,RX Text--Other,4000
+2680,Text--Remarks,4000
+2690,Text--Place of Diagnosis,60
+3100,Archive FIN (#3100),
+3105,NPI--Archive FIN (#3105),
+7010,Path Reporting Fac ID 1,25
+7011,Path Reporting Fac ID 2,25
+7012,Path Reporting Fac ID 3,25
+7013,Path Reporting Fac ID 4,25
+7014,Path Reporting Fac ID 5,25
+7090,Path Report Number 1,20
+7091,Path Report Number 2,20
+7092,Path Report Number 3,20
+7093,Path Report Number 4,20
+7094,Path Report Number 5,20
+7100,Path Order Phys Lic No 1,20
+7101,Path Order Phys Lic No 2,20
+7102,Path Order Phys Lic No 3,20
+7103,Path Order Phys Lic No 4,20
+7104,Path Order Phys Lic No 5,20
+7190,Path Ordering Fac No 1,25
+7191,Path Ordering Fac No 2,25
+7192,Path Ordering Fac No 3,25
+7193,Path Ordering Fac No 4,25
+7194,Path Ordering Fac No 5,25
+7320,Path Date Spec Collect 1,14
+7321,Path Date Spec Collect 2,14
+7322,Path Date Spec Collect 3,14
+7323,Path Date Spec Collect 4,14
+7324,Path Date Spec Collect 5,14
+7480,Path Report Type 1,2
+7481,Path Report Type 2,2
+7482,Path Report Type 3,2
+7483,Path Report Type 4,2
+7484,Path Report Type 5,2
