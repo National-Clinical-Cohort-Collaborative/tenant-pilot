@@ -1,7 +1,7 @@
---PCORNet 7.0 extraction code for N3C
+--PCORNet 7.0 extraction code for N3C Clinical Pilot
 --This extract purposefully excludes the following PCORnet tables: ENROLLMENT, HARVEST, HASH_TOKEN, PCORNET_TRIAL, LAB_HISTORY, EXTERNAL_MEDS, PAT_RELATIONSHIP 
 --Assumptions:
---	1. You have already built the N3C_COHORT table (with that name) prior to running this extract
+--	1. You have already built the N3C_CLINCIAL_COHORT table (with that name) prior to running this extract
 --	2. You are extracting data with a lookback period to 1-1-2018
 
 --MANIFEST TABLE: CHANGE PER YOUR SITE'S SPECS
